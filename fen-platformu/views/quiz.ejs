@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= konu %> Quiz - <%= ders.charAt(0).toUpperCase() + ders.slice(1) %> - Fen Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-flask"></i> Fen Platformu
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Ana Sayfa</a></li>
+                <li><a href="/konular/<%= ders %>"><%= ders.charAt(0).toUpperCase() + ders.slice(1) %></a></li>
+                <li><a href="/ders/<%= ders %>/<%= konu %>">Ders Sayfası</a></li>
+                <li><a href="#" onclick="history.back()">Geri</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Gizli soru verisi -->
+        <div id="sorular-data" style="display: none;"><%- JSON.stringify(sorular || []) %></div>
+        
+        <div class="quiz-container fade-in">
+            <div class="quiz-header">
+                <h1><%= konu.charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> Quiz</h1>
+                <div class="quiz-info">
+                    <span><i class="fas fa-clock"></i> Süre: 15 dakika</span>
+                    <span><i class="fas fa-question-circle"></i> 10 Soru</span>
+                    <span><i class="fas fa-star"></i> Puan: 100</span>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="current-question">1</span> / <span id="total-questions">10</span>
+                </div>
+            </div>
+
+            <div class="quiz-content" id="quiz-content">
+                <div class="question-container">
+                    <div class="question-header">
+                        <span class="question-number">Soru 1</span>
+                        <span class="question-difficulty">Orta</span>
+                    </div>
+                    <div class="question">
+                        <%= konu.replace('-', ' ').charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> ile ilgili temel soru?
+                    </div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(0)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Seçenek A - Doğru cevap bu olabilir</span>
+                        </div>
+                        <div class="option" onclick="selectOption(1)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Seçenek B - Yanlış cevap</span>
+                        </div>
+                        <div class="option" onclick="selectOption(2)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">Seçenek C - Yanlış cevap</span>
+                        </div>
+                        <div class="option" onclick="selectOption(3)">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">Seçenek D - Yanlış cevap</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-controls">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" id="prev-btn" disabled>
+                        <i class="fas fa-arrow-left"></i> Önceki
+                    </button>
+                    <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn">
+                        Sonraki <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-success" onclick="finishQuiz()" id="finish-btn" style="display: none;">
+                        Quiz'i Bitir <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="quiz-sidebar">
+                <div class="timer-section">
+                    <h3><i class="fas fa-hourglass-half"></i> Kalan Süre</h3>
+                    <div class="timer" id="timer">15:00</div>
+                </div>
+
+                <div class="question-nav">
+                    <h3>Sorular</h3>
+                    <div class="question-grid" id="question-grid">
+                        <!-- Soru numaraları JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+
+                <div class="quiz-stats">
+                    <h3>İstatistikler</h3>
+                    <div class="stat-item">
+                        <span>Doğru:</span>
+                        <span id="correct-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Yanlış:</span>
+                        <span id="wrong-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Boş:</span>
+                        <span id="empty-count">10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-results" id="quiz-results" style="display: none;">
+            <div class="results-container">
+                <h2>Quiz Tamamlandı! 🎉</h2>
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span class="score-percentage" id="score-percentage">85%</span>
+                    </div>
+                    <div class="score-details">
+                        <p>Doğru: <strong id="final-correct">8</strong> / 10</p>
+                        <p>Yanlış: <strong id="final-wrong">2</strong> / 10</p>
+                        <p>Puan: <strong id="final-score">85</strong> / 100</p>
+                    </div>
+                </div>
+
+                <div class="performance-message" id="performance-message">
+                    <h3>Harika İş! 🌟</h3>
+                    <p>Bu konuyu çok iyi anlamışsınız. Devam edin!</p>
+                </div>
+
+                <div class="answer-review">
+                    <h3>Cevaplarınızı Gözden Geçirin</h3>
+                    <div id="review-answers">
+                        <!-- Cevap inceleme JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        <i class="fas fa-redo"></i> Tekrar Dene
+                    </button>
+                    <button class="btn btn-secondary" onclick="location.href='/ders/<%= ders %>/<%= konu %>'">
+                        <i class="fas fa-arrow-left"></i> Ders Sayfasına Dön
+                    </button>
+                    <button class="btn btn-success" onclick="shareResults()">
+                        <i class="fas fa-share"></i> Sonuçları Paylaş
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .quiz-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .quiz-info span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .question-container {
+            margin-bottom: 2rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .question-difficulty {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--light-bg);
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--error-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .quiz-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .timer-section, .question-nav, .quiz-stats {
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .timer {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 1rem;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .question-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .question-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .question-btn.answered {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .question-btn.current {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .quiz-results {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success-color) 0% 85%, var(--border-color) 85% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: var(--card-bg);
+            border-radius: 50%;
+        }
+
+        .score-percentage {
+            position: relative;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+
+        .performance-message {
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .answer-review {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        let timeLeft = 900; // 15 dakika
+        let timerInterval;
+
+        // Soruları HTML'den al
+        let quizData = [];
+        const sorularElement = document.getElementById('sorular-data');
+        if (sorularElement) {
+            quizData = JSON.parse(sorularElement.textContent);
+        }
+        
+        // Eğer soru yoksa varsayılan sorular
+        if (quizData.length === 0) {
+            quizData = [
+                {
+                    question: "<%= konu.replace('-', ' ').charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> ile ilgili temel soru 1?",
+                    options: ["Doğru cevap", "Yanlış cevap 1", "Yanlış cevap 2", "Yanlış cevap 3"],
+                    correct: 0,
+                    difficulty: "Kolay",
+                    tip: "Genel"
+                },
+                {
+                    question: "<%= konu.replace('-', ' ').charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> ile ilgili temel soru 2?",
+                    options: ["Yanlış cevap 1", "Doğru cevap", "Yanlış cevap 2", "Yanlış cevap 3"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    tip: "Genel"
+                },
+                {
+                    question: "<%= konu.replace('-', ' ').charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> ile ilgili temel soru 3?",
+                    options: ["Yanlış cevap 1", "Yanlış cevap 2", "Doğru cevap", "Yanlış cevap 3"],
+                    correct: 2,
+                    difficulty: "Zor",
+                    tip: "Genel"
+                }
+            ];
+        }
+
+        function initQuiz() {
+            // Soru grid'ini oluştur
+            const questionGrid = document.getElementById('question-grid');
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'question-btn';
+                btn.textContent = i + 1;
+                btn.onclick = () => goToQuestion(i);
+                questionGrid.appendChild(btn);
+            }
+            
+            document.getElementById('total-questions').textContent = quizData.length;
+            displayQuestion();
+            startTimer();
+        }
+
+        function displayQuestion() {
+            if (currentQuestion >= quizData.length) {
+                finishQuiz();
+                return;
+            }
+
+            const question = quizData[currentQuestion];
+            document.querySelector('.question').textContent = question.question;
+            document.querySelector('.question-number').textContent = `Soru ${currentQuestion + 1}`;
+            document.querySelector('.question-difficulty').textContent = question.difficulty;
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+
+            const optionsContainer = document.querySelector('.options');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.onclick = () => selectOption(index);
+                optionDiv.innerHTML = `
+                    <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Önceki cevap varsa işaretle
+            if (answers[currentQuestion] !== undefined) {
+                document.querySelectorAll('.option')[answers[currentQuestion]].classList.add('selected');
+            }
+
+            updateQuestionNav();
+            updateButtons();
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            // Önceki seçimi temizle
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Yeni seçimi işaretle
+            document.querySelectorAll('.option')[index].classList.add('selected');
+            
+            // Cevabı kaydet
+            answers[currentQuestion] = index;
+            
+            updateQuestionNav();
+            updateStats();
+        }
+
+        function updateQuestionNav() {
+            const buttons = document.querySelectorAll('.question-btn');
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('current', 'answered');
+                if (index === currentQuestion) {
+                    btn.classList.add('current');
+                }
+                if (answers[index] !== undefined) {
+                    btn.classList.add('answered');
+                }
+            });
+        }
+
+        function updateButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const finishBtn = document.getElementById('finish-btn');
+
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === quizData.length - 1) {
+                nextBtn.style.display = 'none';
+                finishBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                finishBtn.style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+        }
+
+        function updateStats() {
+            const answered = answers.filter(a => a !== undefined).length;
+            const empty = quizData.length - answered;
+            
+            document.getElementById('correct-count').textContent = '0';
+            document.getElementById('wrong-count').textContent = '0';
+            document.getElementById('empty-count').textContent = empty;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function goToQuestion(index) {
+            currentQuestion = index;
+            displayQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            
+            // Cevapları kontrol et
+            let correctCount = 0;
+            answers.forEach((answer, index) => {
+                if (answer === quizData[index].correct) {
+                    correctCount++;
+                }
+            });
+            
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+            
+            // Sonuçları göster
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'block';
+            
+            document.getElementById('score-percentage').textContent = percentage + '%';
+            document.getElementById('final-correct').textContent = correctCount;
+            document.getElementById('final-wrong').textContent = quizData.length - correctCount;
+            document.getElementById('final-score').textContent = percentage;
+            
+            // Performans mesajı
+            const performanceMessage = document.getElementById('performance-message');
+            if (percentage >= 80) {
+                performanceMessage.innerHTML = '<h3>Harika İş! 🌟</h3><p>Bu konuyu çok iyi anlamışsınız. Devam edin!</p>';
+            } else if (percentage >= 60) {
+                performanceMessage.innerHTML = '<h3>İyi İş! 👍</h3><p>Gayet başarılısınız. Daha fazla pratik yapabilirsiniz.</p>';
+            } else {
+                performanceMessage.innerHTML = '<h3>Çalışmaya Devam! 💪</h3><p>Daha fazla pratik yaparak daha iyi olabilirsiniz.</p>';
+            }
+        }
+
+        function shareResults() {
+            const percentage = document.getElementById('score-percentage').textContent;
+            const text = `Fen Platformu quiz'inde %${percentage} aldım!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Fen Platformu Quiz Sonucu',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // Kopyala
+                navigator.clipboard.writeText(text);
+                alert('Sonuçlar panoya kopyalandı!');
+            }
+        }
+
+        // Quiz'i başlat
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

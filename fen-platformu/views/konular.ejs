@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= ders.charAt(0).toUpperCase() + ders.slice(1) %> Konuları - Fen Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-flask"></i> Fen Platformu
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Ana Sayfa</a></li>
+                <li><a href="/ai-asistan">AI Asistan</a></li>
+                <li><a href="#" onclick="history.back()">Geri</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="konu-container fade-in">
+            <div class="konu-header">
+                <h1><%= ders.charAt(0).toUpperCase() + ders.slice(1) %> Konuları</h1>
+                <p><%= ders %> dersindeki tüm konuları videolu anlatımlarla öğren</p>
+            </div>
+
+            <div class="konular-grid">
+                <% 
+                const konular = {
+                    fizik: [
+                        { id: 'kuvvet-hareket', title: 'Kuvvet ve Hareket', description: 'Newton kanunları, hız, ivme ve momentum', sure: '45 dk', seviye: 'Orta' },
+                        { id: 'enerji', title: 'Enerji', description: 'Kinetik ve potansiyel enerji, enerji korunumu', sure: '40 dk', seviye: 'Kolay' },
+                        { id: 'elektrik', title: 'Elektrik ve Manyetizma', description: 'Elektrik akımı, devreler, manyetik alanlar', sure: '50 dk', seviye: 'Zor' },
+                        { id: 'dalga', title: 'Dalga Optiği', description: 'Işık, ses, yansıma, kırılma ve girişim', sure: '35 dk', seviye: 'Orta' },
+                        { id: 'modern-fizik', title: 'Modern Fizik', description: 'Görelilik, kuantum mekaniği ve atom fiziği', sure: '60 dk', seviye: 'Zor' }
+                    ],
+                    kimya: [
+                        { id: 'atom-yapisi', title: 'Atom Yapısı', description: 'Atom modeli, elektron dizilimi ve periyodik tablo', sure: '40 dk', seviye: 'Orta' },
+                        { id: 'kimyasal-baglar', title: 'Kimyasal Bağlar', description: 'Kovalent, iyonik ve metalik bağlar', sure: '35 dk', seviye: 'Kolay' },
+                        { id: 'tepkimeler', title: 'Kimyasal Tepkimeler', description: 'Tepkime türleri, denge ve kinetik', sure: '45 dk', seviye: 'Orta' },
+                        { id: 'organik', title: 'Organik Kimya', description: 'Karbon bileşikleri, hidrokarbonlar ve fonksiyonel gruplar', sure: '55 dk', seviye: 'Zor' },
+                        { id: 'asit-baz', title: 'Asit ve Bazlar', description: 'pH, tampon çözeltiler ve titrasyon', sure: '30 dk', seviye: 'Orta' }
+                    ],
+                    biyoloji: [
+                        { id: 'hucre', title: 'Hücre Biyolojisi', description: 'Hücre yapısı, organeller ve hücre bölünmesi', sure: '50 dk', seviye: 'Orta' },
+                        { id: 'genetik', title: 'Genetik', description: 'DNA, RNA, genetik kod ve kalıtım', sure: '45 dk', seviye: 'Zor' },
+                        { id: 'ekosistem', title: 'Ekosistemler', description: 'Besin zincirleri, enerji akışı ve ekolojik denge', sure: '35 dk', seviye: 'Kolay' },
+                        { id: 'insan-fizyolojisi', title: 'İnsan Fizyolojisi', description: 'Dolaşım, solunum, sindirim ve sinir sistemleri', sure: '60 dk', seviye: 'Orta' },
+                        { id: 'evrim', title: 'Evrim', description: 'Doğal seçilim, adaptasyon ve türleşme', sure: '40 dk', seviye: 'Orta' }
+                    ],
+                    astronomi: [
+                        { id: 'gunes-sistemi', title: 'Güneş Sistemi', description: 'Gezegenler, uydular ve küçük cisimler', sure: '40 dk', seviye: 'Kolay' },
+                        { id: 'yildizlar', title: 'Yıldızlar', description: 'Yıldız yaşam döngüsü ve spektrumlar', sure: '45 dk', seviye: 'Orta' },
+                        { id: 'galaksiler', title: 'Galaksiler', description: 'Samanyolu, diğer galaksiler ve galaksi kümeleri', sure: '35 dk', seviye: 'Zor' },
+                        { id: 'kainat', title: 'Evrenin Yapısı', description: 'Büyük Patlama, karanlık madde ve karanlık enerji', sure: '50 dk', seviye: 'Zor' }
+                    ],
+                    jeoloji: [
+                        { id: 'yapi', title: 'Dünya\'nın Yapısı', description: 'Kabuk, manto ve çekirdek katmanları', sure: '35 dk', seviye: 'Kolay' },
+                        { id: 'kayac', title: 'Kayaçlar ve Mineraller', description: 'Mağmatik, tortul ve metamorfik kayaçlar', sure: '40 dk', seviye: 'Orta' },
+                        { id: 'tektonik', title: 'Levha Tektoniği', description: 'Kıtasal drift, depremler ve volkanlar', sure: '45 dk', seviye: 'Orta' },
+                        { id: 'jeolojik-zaman', title: 'Jeolojik Zaman', description: 'Jeolojik dönemler ve fosil kayıtları', sure: '30 dk', seviye: 'Kolay' }
+                    ]
+                };
+                
+                const dersKonulari = konular[ders] || [];
+                %>
+
+                <% dersKonulari.forEach(konu => { %>
+                    <div class="konu-card fade-in" onclick="location.href='/ders/<%= ders %>/<%= konu.id %>'">
+                        <div class="konu-header">
+                            <h3><%= konu.title %></h3>
+                            <span class="seviye-badge seviye-<%= konu.seviye.toLowerCase() %>"><%= konu.seviye %></span>
+                        </div>
+                        <p><%= konu.description %></p>
+                        <div class="konu-meta">
+                            <span><i class="fas fa-clock"></i> <%= konu.sure %></span>
+                            <span><i class="fas fa-play-circle"></i> Video Ders</span>
+                            <span><i class="fas fa-question-circle"></i> Quiz</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: <%= Math.floor(Math.random() * 80) %>%"></div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .konular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .konu-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .konu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .konu-card .konu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .seviye-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .seviye-kolay {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .seviye-orta {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .seviye-zor {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        .konu-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .konu-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

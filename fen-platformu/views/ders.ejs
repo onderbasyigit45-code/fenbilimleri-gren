@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= konu.charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> - <%= ders.charAt(0).toUpperCase() + ders.slice(1) %> - Fen Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-flask"></i> Fen Platformu
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Ana Sayfa</a></li>
+                <li><a href="/konular/<%= ders %>"><%= ders.charAt(0).toUpperCase() + ders.slice(1) %></a></li>
+                <li><a href="/ai-asistan">AI Asistan</a></li>
+                <li><a href="#" onclick="history.back()">Geri</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="konu-container fade-in">
+            <div class="konu-header">
+                <h1><%= konu.charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %></h1>
+                <div class="konu-nav">
+                    <button class="btn btn-secondary" onclick="location.href='/quiz/<%= ders %>/<%= konu %>'">
+                        <i class="fas fa-question-circle"></i> Quiz'e Başla
+                    </button>
+                    <button class="btn btn-primary" onclick="scrollToVideo()">
+                        <i class="fas fa-play"></i> Videoyu İzle
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-tabs">
+                <button class="tab-btn active" onclick="showTab('video')">
+                    <i class="fas fa-video"></i> Video Ders
+                </button>
+                <button class="tab-btn" onclick="showTab('notlar')">
+                    <i class="fas fa-sticky-note"></i> Ders Notları
+                </button>
+                <button class="tab-btn" onclick="showTab('kaynaklar')">
+                    <i class="fas fa-book"></i> Kaynaklar
+                </button>
+                <button class="tab-btn" onclick="showTab('alistirmalar')">
+                    <i class="fas fa-pencil-alt"></i> Alıştırmalar
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <div id="video-tab" class="tab-pane active">
+                    <div class="video-container" id="video-section">
+                        <iframe 
+                            src="https://www.youtube.com/embed/<%= getVideoId(ders, konu) %>?autoplay=0&rel=0&modestbranding=1"
+                            title="<%= konu %> video dersi"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h3>Video Hakkında</h3>
+                        <p>Bu videoda <%= konu.replace('-', ' ') %> konusunu detaylı olarak inceliyoruz. Video yaklaşık 45 dakika sürmektedir ve konunun tüm önemli noktalarını kapsamaktadır.</p>
+                        
+                        <div class="video-chapters">
+                            <h4>Video İçerikleri</h4>
+                            <ul>
+                                <li><a href="#" onclick="jumpToTime(0)">00:00 - Giriş ve Konu Tanıtımı</a></li>
+                                <li><a href="#" onclick="jumpToTime(60)">01:00 - Temel Kavramlar</a></li>
+                                <li><a href="#" onclick="jumpToTime(300)">05:00 - Detaylı Anlatım</a></li>
+                                <li><a href="#" onclick="jumpToTime(1800)">30:00 - Örnek Sorular</a></li>
+                                <li><a href="#" onclick="jumpToTime(2400)">40:00 - Özet ve Çıkarımlar</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="notlar-tab" class="tab-pane">
+                    <div class="ders-notlari">
+                        <h3>Ders Notları</h3>
+                        
+                        <div class="not-bolumu">
+                            <h4><i class="fas fa-lightbulb"></i> Temel Kavramlar</h4>
+                            <p><%= konu.replace('-', ' ') %> konusunun temel kavramlarını anlamak, ileri seviye konuları öğrenmek için önemlidir. Bu bölümde konunun temel prensiplerini ve tanımlarını bulacaksınız.</p>
+                            
+                            <div class="important-note">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Önemli:</strong> Bu konudaki formüller ve denklemleri ezberlemek yerine, nasıl çalıştıklarını anlamaya odaklanın.
+                            </div>
+                        </div>
+
+                        <div class="not-bolumu">
+                            <h4><i class="fas fa-calculator"></i> Formüller ve Denklemeler</h4>
+                            <div class="formula-box">
+                                <h5>Temel Formül</h5>
+                                <div class="formula">
+                                    E = mc²
+                                </div>
+                                <p>Burada E enerji, m kütle ve c ışık hızını temsil eder.</p>
+                            </div>
+                        </div>
+
+                        <div class="not-bolumu">
+                            <h4><i class="fas fa-microscope"></i> Uygulama Alanları</h4>
+                            <ul>
+                                <li>Günlük hayattaki örnekler</li>
+                                <li>Endüstriyel uygulamalar</li>
+                                <li>Bilimsel araştırmalardaki kullanımı</li>
+                            </ul>
+                        </div>
+
+                        <div class="download-section">
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-download"></i> PDF İndir
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-print"></i> Yazdır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kaynaklar-tab" class="tab-pane">
+                    <div class="kaynaklar">
+                        <h3>Öğrenme Kaynakları</h3>
+                        
+                        <div class="kaynak-listesi">
+                            <div class="kaynak-item">
+                                <h4><i class="fas fa-book-open"></i> Kitaplar</h4>
+                                <ul>
+                                    <li><%= ders.charAt(0).toUpperCase() + ders.slice(1) %> Ders Kitabı - MEB</li>
+                                    <li><%= konu.replace('-', ' ').charAt(0).toUpperCase() + konu.replace('-', ' ').slice(1) %> Özel Konu Kitabı</li>
+                                    <li>Uzmanlar Tarafından Hazırlanan Kaynak Kitaplar</li>
+                                </ul>
+                            </div>
+
+                            <div class="kaynak-item">
+                                <h4><i class="fas fa-globe"></i> Web Siteleri</h4>
+                                <ul>
+                                    <li><a href="#" target="_blank">Khan Academy - Türkçe</a></li>
+                                    <li><a href="#" target="_blank">PhET Interactive Simulations</a></li>
+                                    <li><a href="#" target="_blank">NASA Educational Resources</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="kaynak-item">
+                                <h4><i class="fas fa-flask"></i> Simülasyonlar</h4>
+                                <ul>
+                                    <li>Interaktif laboratuvar deneyleri</li>
+                                    <li>Sanal gerçeklik uygulamaları</li>
+                                    <li>3D modellemeler</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="alistirmalar-tab" class="tab-pane">
+                    <div class="alistirmalar">
+                        <h3>Alıştırmalar ve Sorular</h3>
+                        
+                        <div class="exercise-types">
+                            <div class="exercise-card">
+                                <h4><i class="fas fa-pencil-alt"></i> Temel Seviye Sorular</h4>
+                                <p>Konunun temelini anlamak için temel seviye sorular.</p>
+                                <button class="btn btn-secondary">Başla</button>
+                            </div>
+
+                            <div class="exercise-card">
+                                <h4><i class="fas fa-brain"></i> Orta Seviye Sorular</h4>
+                                <p>Konu hakkında daha derinlemesine düşünmeyi gerektiren sorular.</p>
+                                <button class="btn btn-secondary">Başla</button>
+                            </div>
+
+                            <div class="exercise-card">
+                                <h4><i class="fas fa-trophy"></i> İleri Seviye Sorular</h4>
+                                <p>YKS ve diğer sınavlara hazırlık için zor sorular.</p>
+                                <button class="btn btn-secondary">Başla</button>
+                            </div>
+                        </div>
+
+                        <div class="homework-section">
+                            <h4>Ödevler</h4>
+                            <div class="homework-list">
+                                <div class="homework-item">
+                                    <span>Ödev 1: Temel Kavramlar</span>
+                                    <span class="deadline">Son teslim: 3 gün</span>
+                                </div>
+                                <div class="homework-item">
+                                    <span>Ödev 2: Problem Çözümü</span>
+                                    <span class="deadline">Son teslim: 7 gün</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-help-section">
+            <div class="ai-chat">
+                <h3><i class="fas fa-robot"></i> AI Öğrenim Asistanı</h3>
+                <p>Bu konu hakkında sorularınızı mı var? AI asistanımız size anında yardımcı olabilir!</p>
+                <button class="btn btn-primary" onclick="openAIChat()">
+                    <i class="fas fa-comments"></i> Asistanla Konuş
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .konu-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .content-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .tab-content {
+            margin-top: 2rem;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .video-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: var(--radius);
+        }
+
+        .video-chapters ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .video-chapters li {
+            margin: 0.5rem 0;
+        }
+
+        .video-chapters a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .video-chapters a:hover {
+            text-decoration: underline;
+        }
+
+        .ders-notlari {
+            max-width: 800px;
+        }
+
+        .not-bolumu {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .important-note {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .formula-box {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .formula {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .download-section {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .kaynak-item {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: var(--radius);
+        }
+
+        .kaynak-item ul {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .exercise-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .exercise-card {
+            padding: 1.5rem;
+            background: var(--light-bg);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .homework-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .deadline {
+            color: var(--warning-color);
+            font-size: 0.9rem;
+        }
+
+        .ai-help-section {
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .content-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .konu-nav {
+                flex-direction: column;
+            }
+            
+            .exercise-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        function showTab(tabName) {
+            // Tüm tabları gizle
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Tüm butonlardan active sınıfını kaldır
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Seçili tabı göster
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Seçili butonu aktif et
+            event.target.classList.add('active');
+        }
+
+        function scrollToVideo() {
+            document.getElementById('video-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function jumpToTime(seconds) {
+            // Videoyu belirli bir zamana atla (iframe kontrolü için)
+            const iframe = document.querySelector('.video-container iframe');
+            if (iframe) {
+                // YouTube iframe API kullanılabilir
+                console.log('Video atlanıyor:', seconds, 'saniye');
+            }
+        }
+
+        function openAIChat() {
+            // AI chat penceresini aç
+            window.open('/ai-asistan?konu=<%= konu %>', '_blank', 'width=800,height=600');
+        }
+    </script>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

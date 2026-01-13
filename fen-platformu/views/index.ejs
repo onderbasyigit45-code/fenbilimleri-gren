@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fen Platformu - Lise Fen Bilimleri Öğrenim Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-flask"></i> Fen Platformu
+            </div>
+            <ul class="nav-links">
+                <li><a href="#anasayfa">Ana Sayfa</a></li>
+                <li><a href="/ai-asistan">AI Asistan</a></li>
+                <li><a href="#hakkinda">Hakkında</a></li>
+                <li><a href="#iletisim">İletişim</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="anasayfa" class="container">
+            <div class="hero fade-in">
+                <h1>Fen Bilimlerini Keşfet</h1>
+                <p>Yapay zeka destekli, videolu konu anlatımları ve interaktif quizlerle lise fen öğrenimini yeni seviyeye taşı</p>
+                <div class="erisim-bilgileri fade-in">
+                    <h3>📱 Platforma Erişim</h3>
+                    <div class="erisim-kartlari">
+                        <div class="erisim-karti">
+                            <h4>🏠 Yerel Ağ</h4>
+                            <p>http://localhost:3000</p>
+                            <span class="badge yerel">Sadece aynı ağ</span>
+                        </div>
+                        <div class="erisim-karti">
+                            <h4>🌐 Özel Domain</h4>
+                            <p>fenbilimlericalis.loca.lt</p>
+                            <span class="badge ozel">Profesyonel</span>
+                        </div>
+                        <div class="erisim-karti">
+                            <h4>🚀 Global</h4>
+                            <p>npm run domain</p>
+                            <span class="badge global">Her yerden</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="fade-in">
+                    <a href="#dersler" class="btn btn-primary">Keşfetmeye Başla</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="dersler" class="container">
+            <div class="dersler-grid">
+                <div class="ders-card fade-in" onclick="location.href='/konular/fizik'">
+                    <div class="ikon">⚛️</div>
+                    <h3>Fizik</h3>
+                    <p>Kuvvet, hareket, enerji, elektrik ve manyetizma gibi konuları videolu anlatımlarla öğren</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 35%"></div>
+                    </div>
+                    <small>İlerleme: %35</small>
+                </div>
+
+                <div class="ders-card fade-in" onclick="location.href='/konular/kimya'">
+                    <div class="ikon">🧪</div>
+                    <h3>Kimya</h3>
+                    <p>Atom yapısı, periyodik tablo, kimyasal tepkimeler ve organik kimya konularında uzmanlaş</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%"></div>
+                    </div>
+                    <small>İlerleme: %60</small>
+                </div>
+
+                <div class="ders-card fade-in" onclick="location.href='/konular/biyoloji'">
+                    <div class="ikon">🧬</div>
+                    <h3>Biyoloji</h3>
+                    <p>Hücre biyolojisi, genetik, ekosistemler ve insan anatomisi hakkında her şey</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <small>İlerleme: %45</small>
+                </div>
+
+                <div class="ders-card fade-in" onclick="location.href='/konular/astronomi'">
+                    <div class="ikon">🌌</div>
+                    <h3>Astronomi</h3>
+                    <p>Evrenin yapı taşları, gezegenler, yıldızlar ve galaksiler hakkında keşiflere çık</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 20%"></div>
+                    </div>
+                    <small>İlerleme: %20</small>
+                </div>
+
+                <div class="ders-card fade-in" onclick="location.href='/konular/jeoloji'">
+                    <div class="ikon">🌍</div>
+                    <h3>Jeoloji</h3>
+                    <p>Dünya'nın yapısı, kayaçlar, mineraller ve jeolojik süreçleri öğren</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <small>İlerleme: %30</small>
+                </div>
+
+                <div class="ders-card fade-in" onclick="location.href='/ai-asistan'">
+                    <div class="ikon">🤖</div>
+                    <h3>AI Asistan</h3>
+                    <p>Yapay zeka destekli öğrenim asistanıyla sorularını anında cevapla</p>
+                    <button class="btn btn-primary">Asistanı Aç</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="ozellikler" class="container">
+            <div class="konu-container">
+                <h2>Platform Özellikleri</h2>
+                <div class="dersler-grid">
+                    <div class="feature-card">
+                        <div class="ikon">🎥</div>
+                        <h3>Videolu Konu Anlatımları</h3>
+                        <td>Uzman öğretmenler tarafından hazırlanan HD kalitesinde video dersler</td>
+                    </div>
+                    <div class="feature-card">
+                        <div class="ikon">🤖</div>
+                        <h3>Yapay Zeka Destek</h3>
+                        <td>7/24 hizmet veren AI asistanla anında soru-cevap</td>
+                    </div>
+                    <div class="feature-card">
+                        <div class="ikon">📝</div>
+                        <h3>Interaktif Quizler</h3>
+                        <td>Öğrendiklerini test et ve pekiştir</td>
+                    </div>
+                    <div class="feature-card">
+                        <div class="ikon">📊</div>
+                        <h3>İlerleme Takibi</h3>
+                        <td>Kişisel öğrenim grafiğinle gelişimini izle</td>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Fen Platformu</h3>
+                    <p>Lise öğrencileri için modern fen öğrenim platformu</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Hızlı Linkler</h4>
+                    <ul>
+                        <li><a href="#dersler">Dersler</a></li>
+                        <li><a href="/ai-asistan">AI Asistan</a></li>
+                        <li><a href="#iletisim">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Bizi Takip Edin</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fen Platformu. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
